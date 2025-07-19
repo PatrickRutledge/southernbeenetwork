@@ -1,0 +1,61 @@
+name: Deploy Bee Submit Function
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'BeeSubmitFunction/**'
+  workflow_dispatch:  # Enables manual triggering
+
+env:
+  AZURE_FUNCTIONAPP_NAME: BeeSubmitFunction
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: './BeeSubmitFunction'
+  NODE_VERSION: '~20'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+
+    - name: Package Function
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        npm install
+        npm run build --if-present
+        zip -r ../function-release.zip ./*
+        popd
+      
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Azure Functions Action
+      uses: Azure/functions-action@v1
+      with:
+        app-name: ${{ env.AZURE_FUNCTIONAPP_NAME }}
+        package: function-release.zip
+        respect-funcignore: true
+        enable-oryx-build: false
+
+    - name: Verify Deployment
+      shell: bash
+      run: |
+        echo "Verifying deployment..."
+        sleep 10  # Allow function to initialize
+        FUNCTION_URL="https://${{ env.AZURE_FUNCTIONAPP_NAME }}.azurewebsites.net/api/submitListing"
+        HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" $FUNCTION_URL)
+        if [ $HTTP_STATUS -eq 200 ]; then
+          echo "✅ Function deployed successfully"
+        else
+          echo "⚠️ Function verification returned status $HTTP_STATUS"
+          exit 1
+        fi
