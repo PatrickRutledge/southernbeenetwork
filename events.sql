@@ -1,0 +1,10 @@
+CREATE TABLE Events (
+  Id INT PRIMARY KEY IDENTITY(1,1),
+  Title NVARCHAR(100) NOT NULL,
+  Description NVARCHAR(MAX),
+  GroupName NVARCHAR(100),
+  EventDate DATETIME,
+  SubmittedBy NVARCHAR(100),
+  IsApproved BIT DEFAULT 0,
+  CreatedAt DATETIME DEFAULT GETDATE()
+);

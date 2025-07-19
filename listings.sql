@@ -1,0 +1,14 @@
+CREATE TABLE Listings (
+  Id INT PRIMARY KEY IDENTITY(1,1),
+  TradeName NVARCHAR(100) NOT NULL,
+  ContactName NVARCHAR(100) NOT NULL,
+  Address NVARCHAR(255),
+  Phone NVARCHAR(20),
+  Email NVARCHAR(100),
+  Website NVARCHAR(255),
+  SocialLinks NVARCHAR(MAX),
+  IsPremium BIT DEFAULT 0,
+  Status NVARCHAR(20) DEFAULT 'Pending',
+  LastVerified DATETIME NULL,
+  CreatedAt DATETIME DEFAULT GETDATE()
+);

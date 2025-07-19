@@ -1,0 +1,25 @@
+<form id="submitListing" method="POST" action="/api/submitListing">
+  <h2>Submit Your Listing</h2>
+
+  <label for="name">Business or Org Name:</label>
+  <input type="text" id="name" name="name" required>
+
+  <label for="region">Region:</label>
+  <select id="region" name="region">
+    <option value="Midwest">Midwest</option>
+    <option value="South">South</option>
+    <option value="Pacific">Pacific</option>
+  </select>
+
+  <label for="category">Category:</label>
+  <select id="category" name="category">
+    <option value="Honey">Honey</option>
+    <option value="Equipment">Equipment</option>
+    <option value="Education">Education</option>
+  </select>
+
+  <label for="description">Description:</label>
+  <textarea id="description" name="description" rows="5"></textarea>
+
+  <input type="submit" value="Submit Listing">
+</form>

@@ -1,0 +1,8 @@
+CREATE TABLE Reviews (
+  Id INT PRIMARY KEY IDENTITY(1,1),
+  ListingId INT FOREIGN KEY REFERENCES Listings(Id),
+  ReviewerName NVARCHAR(100),
+  Comment NVARCHAR(MAX),
+  IsApproved BIT DEFAULT 0,
+  SubmittedAt DATETIME DEFAULT GETDATE()
+);
